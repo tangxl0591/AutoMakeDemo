@@ -30,6 +30,12 @@ jobs:
       with:
         name: app
         path: app/build/outputs/apk/release/app-release.apk   
+    - name: Download APK from build
+      uses: actions/download-artifact@v2
+      with:
+        name: apk
+    - name: Display structure of downloaded files
+      run: ls -R
     # Create Release
     - name: Create Release
       id: create_release
@@ -46,9 +52,7 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`.
-        # See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: app/build/outputs/apk/release/app-release.apk
         asset_name: App.apk
-        asset_content_type: application/vnd.android.package-archiv
+        asset_content_type: application/zip
