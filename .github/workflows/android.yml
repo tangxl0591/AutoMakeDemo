@@ -1,6 +1,7 @@
 name: Android Release
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - 'V*.*.*'  # 仅当标签符合版本号格式时触发
