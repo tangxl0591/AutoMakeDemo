@@ -1,18 +1,19 @@
-name: Android CI
+name: Android Release
 
-on:  
+on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
+    tags:
+      - 'v*.*.*'  # 仅当标签符合版本号格式时触发
 jobs:
   build:
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
     - name: set up JDK 11
       uses: actions/setup-java@v3
       with:
@@ -22,21 +23,21 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+
     - name: Build with Gradle
       run: ./gradlew assembleRelease  
-    # Upload Action  
+    
     - name: Upload Action
       uses: actions/upload-artifact@v2
       with:
         name: app
         path: app/build/outputs/apk/release/app-release.apk   
+
     - name: Download APK from build
       uses: actions/download-artifact@v2
       with:
         name: apk
-    - name: Display structure of downloaded files
-      run: ls -R
-    # Create Release
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -45,7 +46,7 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}
-     # Upload Release
+
     - name: Upload Release Asset
       id: upload-release-asset
       uses: actions/upload-release-asset@v1
