@@ -24,6 +24,12 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew assembleRelease  
+    # Upload Action  
+    - name: Upload APK
+      uses: actions/upload-artifact@v2
+      with:
+        name: app
+        path: app/build/outputs/apk/release/app-release.apk   
     # Create Release
     - name: Create Release
       id: create_release
