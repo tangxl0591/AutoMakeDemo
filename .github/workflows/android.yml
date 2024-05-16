@@ -42,16 +42,19 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}
+        body: |
+            ${{steps.description.outputs.content}}
         draft: false
         prerelease: false
-              
-    - name: Debug Create Release Output
-      run: |
-        echo "Release ID: ${{ env.RELEASE_ID }}"
-        echo "Release Upload URL: ${{ env.RELEASE_UPLOAD_URL }}"
-      env:
-        RELEASE_ID: ${{ steps.create_release.outputs.id }}
-        RELEASE_UPLOAD_URL: ${{ steps.create_release.outputs.upload_url }}
+
+    - name: Get java-version
+      users: action/github-script@v3
+      id: get-version
+      with:
+        script: |
+          const str=process.env.GITHUB_REF;
+          return str.substring(str.indexOf("v"));
+        result-encoding: string  
     
     - name: Upload Release Asset
       id: upload-release-asset
@@ -59,7 +62,7 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ env.RELEASE_UPLOAD_URL }}
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: app/build/outputs/apk/release/app-release.apk
-        asset_name: AutoMakeDemo.apk
+        asset_name: AutoMakeDemo${{steps.get-version.outputs.result}}.apk
         asset_content_type: application/vnd.android.package-archive
