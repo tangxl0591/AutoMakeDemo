@@ -3,8 +3,7 @@ name: Android Release
 on: 
   workflow_dispatch:
   push:
-    tags:
-      - 'V*.*.*'  # 仅当标签符合版本号格式时触发
+    branches: [ master ]
 jobs:
   build:
 
@@ -33,6 +32,15 @@ jobs:
       with:
         name: app
         path: app/build/outputs/apk/release/app-release.apk   
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
 
     - name: Upload Release Asset
       id: upload-release-asset
