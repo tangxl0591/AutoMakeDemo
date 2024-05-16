@@ -42,8 +42,6 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}
-        body: |
-            ${{steps.description.outputs.content}}
         draft: false
         prerelease: false
               
