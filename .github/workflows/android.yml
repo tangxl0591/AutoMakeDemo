@@ -42,10 +42,14 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}
-        body: |
-          ${{steps.description.outputs.content}}   
         draft: false
         prerelease: false
+              
+    - name: Save state
+      run: echo "{name}={value}" >> $GITHUB_STATE
+    
+    - name: Set output
+      run: echo "{name}={value}" >> $GITHUB_OUTPUT
 
     - name: Debug Create Release Output
       run: |
