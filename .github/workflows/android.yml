@@ -53,7 +53,7 @@ jobs:
       with:
         script: |
           const str=process.env.GITHUB_REF;
-          return str.substring(str.indexOf("refs.tags."));
+          return str.substring(10);
         result-encoding: string 
     
     - name: Upload Release Asset
